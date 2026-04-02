@@ -1,0 +1,48 @@
+문제 5
+DDL문과 DML문 질의
+(1) 새로운 도서('스포츠세계', '대한미디어', 10000원)을 Book 테이블에 삽입하시오.
+SQL : 
+INSERT INTO Book (bookid, bookname, publisher, price)
+VALUES (11, '스포츠세계', '대한미디어', 10000);
+
+(2) 출판사 '삼성당'에서 출간한 도서를 삭제하시오.
+
+SQL :
+DELETE FROM Book 
+WHERE publisher = '삼성당';
+
+(3) 출판사 '이상미디어'에서 출간한 도서를 삭제하시오. 삭제되지 않을 경우 그 원인을 설명하시오.
+
+SQL : 
+DELETE FROM Book 
+WHERE publisher = '이상미디어';
+
+삭제 안 될 경우의 원인: 만약 Orders 테이블에서 '이상미디어'의 도서를 주문한 내역이 있고, 외래키(FK) 설정 시 ON DELETE CASCADE 옵션이 없다면 참조 무결성 제약조건에 의해 삭제가 차단됩니다.
+
+(4) 출판사 '대한미디어'를 '대한출판사'로 이름을 변경하시오.
+
+SQL :
+UPDATE Book 
+SET publisher = '대한출판사' 
+WHERE publisher = '대한미디어';
+
+(5) 출판사에 대한 정보를 저장하는 테이블 Bookcompany(name, address, begin)을 생성하시오.
+
+SQL :
+CREATE TABLE Bookcompany (
+    name    VARCHAR2(20) PRIMARY KEY,
+    address VARCHAR2(20),
+    begin   DATE
+);
+
+(6) Bookcompany 테이블에 인터넷 주소를 저장하는 webaddress 속성을 VARCHAR2(30)으로 추가하시오.
+
+SQL :
+ALTER TABLE Bookcompany 
+ADD webaddress VARCHAR2(30);
+
+(7) Bookcompany 테이블에 임의의 튜플을 삽입하시오.
+
+SQL : 
+INSERT INTO Bookcompany (name, address, begin, webaddress)
+VALUES ('한빛아카데미', '서울시 마포구', TO_DATE('1993-01-01', 'YYYY-MM-DD'), 'http://hanbit.co.kr');
