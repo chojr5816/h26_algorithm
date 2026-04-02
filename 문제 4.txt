@@ -1,0 +1,25 @@
+문제 4
+마당서점 데이터베이스에서 주문에 관한 사항은 Orders 테이블에 저장되어 있다. Order
+테이블을 사용하여 도서번호 (bookid) 가 1번인 책은 주문하였으나 2번과 3번 책은 주문
+하지 않은 깩의 아이디(custid)를 찾는 SQL문을 작성하시오
+
+SQL : 
+-- 1. 도서번호 1번을 주문한 고객 ID 목록을 구함
+SELECT custid 
+FROM Orders 
+WHERE bookid = 1
+
+MINUS
+
+-- 2. 도서번호 2번 또는 3번을 주문한 고객 ID 목록을 제외함
+SELECT custid 
+FROM Orders 
+WHERE bookid IN (2, 3);
+
+결과 : 
+    CUSTID
+----------
+         1
+         2
+         5
+

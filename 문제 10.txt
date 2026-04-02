@@ -1,0 +1,37 @@
+문제 10
+(1) 주문한 적 있는 고객 조회 (EXISTS 사용)
+ SQL : 
+SELECT name, address
+FROM Customer cs
+WHERE EXISTS (
+    SELECT *
+    FROM Orders od
+    WHERE cs.custid = od.custid
+);
+
+답 :
+NAME
+--------------------------------------------------------------------------------
+ADDRESS
+--------------------------------------------------------------------------------
+박지수
+서울 마포구 합정동
+
+김도윤
+경기 성남시 분당구
+
+이서연
+서울 강남구 역삼동
+
+(2) 주문한 적 없는 고객 조회 (NOT EXISTS 사용)
+SQL : 
+SELECT name, address
+FROM Customer cs
+WHERE NOT EXISTS (
+    SELECT *
+    FROM Orders od
+    WHERE cs.custid = od.custid
+);
+
+ 답 : 
+선택된 레코드가 없습니다.

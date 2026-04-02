@@ -1,0 +1,90 @@
+문제 17번
+1. Book 테이블 (도서 정보)
+CREATE TABLE Book (
+    bookid    NUMBER PRIMARY KEY,      -- 도서번호 (기본키)
+    bookname  VARCHAR2(40),            -- 도서명
+    publisher VARCHAR2(40),            -- 출판사
+    price     NUMBER                   -- 가격
+);
+
+2. Customer 테이블 (고객 정보)
+CREATE TABLE Customer (
+    custid    NUMBER PRIMARY KEY,      -- 고객번호 (기본키)
+    name      VARCHAR2(40),            -- 이름
+    address   VARCHAR2(50),            -- 주소
+    phone     VARCHAR2(20)             -- 전화번호
+);
+
+3. Orders 테이블 (주문 정보)
+CREATE TABLE Orders (
+    orderid   NUMBER PRIMARY KEY,      -- 주문번호 (기본키)
+    custid    NUMBER,                  -- 고객번호 (외래키)
+    bookid    NUMBER,                  -- 도서번호 (외래키)
+    saleprice NUMBER,                  -- 판매가격
+    orderdate DATE,                    -- 주문일자
+    FOREIGN KEY (custid) REFERENCES Customer(custid),
+    FOREIGN KEY (bookid) REFERENCES Book(bookid)
+);
+
+4. Cust_addr 테이블 (주소 및 전화번호 변경 이력)
+CREATE TABLE Cust_addr (
+    custid     NUMBER,                 -- 고객번호 (외래키, PK 일부)
+    addrid     NUMBER,                 -- 주소변경순번 (PK 일부)
+    address    VARCHAR2(50),           -- 변경된 주소
+    phone      VARCHAR2(20),           -- 변경된 전화번호
+    changedate DATE,                   -- 변경일자
+    PRIMARY KEY (custid, addrid),      -- 복합키 설정
+    FOREIGN KEY (custid) REFERENCES Customer(custid)
+);
+
+****1****. 기존 테이블 삭제 후 다시 생성 (가장 확실한 방법)
+-- 삭제 순서: 외래키가 걸린 테이블부터 지워야 오류가 안 납니다.
+DROP TABLE Cust_addr;
+DROP TABLE Orders;
+DROP TABLE Customer;
+DROP TABLE Book;
+
+-- 그 다음 다시 CREATE TABLE 코드를 실행하세요.
+
+****3****. 현재 어떤 객체가 이름을 쓰고 있는지 확인하기
+SELECT object_name, object_type 
+FROM user_objects 
+WHERE object_name IN ('BOOK', 'CUSTOMER', 'ORDERS', 'CUST_ADDR');
+
+1. Book 테이블 데이터 삽입
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (1, '데이터베이스 개론', '한빛미디어', 28000);
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (2, '자바의 정석', '길벗', 32000);
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (3, '파이썬 머신러닝', '위키북스', 25000);
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (4, '운영체제 원리', '한빛미디어', 30000);
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (5, '알고리즘 문제 풀이', '길벗', 22000);
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (6, '클린 코드', '인사이트', 33000);
+INSERT INTO Book (bookid, bookname, publisher, price) VALUES (7, 'SQL 첫걸음', '한빛미디어', 24000);
+
+2. Customer 테이블 데이터 삽입
+INSERT INTO Customer (custid, name, address, phone) VALUES (1, '박지수', '서울 마포구 합정동', '010-1234-5678');
+INSERT INTO Customer (custid, name, address, phone) VALUES (2, '김도윤', '경기 성남시 분당구', '010-2345-6789');
+INSERT INTO Customer (custid, name, address, phone) VALUES (3, '이서연', '서울 강남구 역삼동', '010-3456-7890');
+INSERT INTO Customer (custid, name, address, phone) VALUES (4, '최민준', '인천 부평구 부평동', '010-4567-8901');
+INSERT INTO Customer (custid, name, address, phone) VALUES (5, '정하은', '서울 송파구 잠실동', '010-5678-9012');
+
+3. Orders 테이블 데이터 삽입
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (1, 1, 1, 28000, TO_DATE('2026-01-05', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (2, 1, 3, 23000, TO_DATE('2026-01-08', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (3, 2, 2, 32000, TO_DATE('2026-01-10', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (4, 2, 5, 20000, TO_DATE('2026-01-12', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (5, 3, 4, 30000, TO_DATE('2026-01-15', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (6, 3, 6, 31000, TO_DATE('2026-01-15', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (7, 4, 7, 22000, TO_DATE('2026-01-18', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (8, 5, 1, 26000, TO_DATE('2026-01-20', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (9, 5, 2, 32000, TO_DATE('2026-01-22', 'YYYY-MM-DD'));
+INSERT INTO Orders (orderid, custid, bookid, saleprice, orderdate) VALUES (10, 1, 6, 33000, TO_DATE('2026-01-25', 'YYYY-MM-DD'));
+
+4. Cust_addr 테이블 데이터 삽입
+INSERT INTO Cust_addr (custid, addrid, address, phone, changedate) VALUES (1, 1, '서울 은평구 불광동', '010-1234-5678', TO_DATE('2024-03-10', 'YYYY-MM-DD'));
+INSERT INTO Cust_addr (custid, addrid, address, phone, changedate) VALUES (1, 2, '서울 마포구 합정동', '010-1234-5678', TO_DATE('2025-07-20', 'YYYY-MM-DD'));
+INSERT INTO Cust_addr (custid, addrid, address, phone, changedate) VALUES (2, 1, '경기 수원시 팔달구', '010-2345-6789', TO_DATE('2023-11-05', 'YYYY-MM-DD'));
+INSERT INTO Cust_addr (custid, addrid, address, phone, changedate) VALUES (2, 2, '경기 성남시 분당구', '010-9999-0000', TO_DATE('2025-02-14', 'YYYY-MM-DD'));
+INSERT INTO Cust_addr (custid, addrid, address, phone, changedate) VALUES (3, 1, '서울 강남구 역삼동', '010-3456-7890', TO_DATE('2025-05-01', 'YYYY-MM-DD'));
+INSERT INTO Cust_addr (custid, addrid, address, phone, changedate) VALUES (4, 1, '부산 해운대구 우동', '010-4567-8901', TO_DATE('2024-08-22', 'YYYY-MM-DD'));
+
+
