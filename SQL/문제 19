@@ -1,0 +1,62 @@
+문제 19
+(1)부서(Department)dp 관한 Dept테이블은 depno(부서번호), dname(부서이름), loc(부서
+위치, location)으로 구성되어 있다. Dept테이블을 생성하는 SQL명령어는 다음과 같다. Dept 테이블을 생성하시오.
+
+-- (1) Dept 테이블 생성
+CREATE TABLE Dept (
+    deptno NUMBER(2) PRIMARY KEY,
+    dname  VARCHAR2(14),
+    loc    VARCHAR2(13)
+);
+
+(2)사원(Employee)에 관한 Emp테이블은 empno(사원번호), ename(사원이름),job(업무),
+mgr(직속상사번호, manager) hiredate(고용날짜), sal(월급여, salary), comm(판매수
+당,commission), deptno(부서번호)로 구성되어 있다. Emp의 deptno는 Dept의 deptno
+를 참조하는 외래키로 지정한다. desc Emp;명령을 사용하면 테이블의 구조를 볼 수 있다. Emp테이블을 생성하는 SQL문을 작성하시오
+
+-- (2) Emp 테이블 생성
+CREATE TABLE Emp (
+    empno    NUMBER(4) PRIMARY KEY,
+    ename    VARCHAR2(10),
+    job      VARCHAR2(9),
+    mgr      NUMBER(4),
+    hiredate DATE,
+    sal      NUMBER(7, 2),
+    comm     NUMBER(7, 2),
+    deptno   NUMBER(2),
+    -- 외래키 설정: Dept 테이블의 deptno를 참조
+    CONSTRAINT fk_deptno FOREIGN KEY (deptno) REFERENCES Dept(deptno),
+    -- 자기 참조 외래키 설정 (관리자)
+    CONSTRAINT fk_mgr FOREIGN KEY (mgr) REFERENCES Emp(empno)
+);
+
+(3)부서에 관한 다음 네 개의 데이터를 삽입하시오. 
+INSERT INTO Dept VALUES (10, 'ACCOUNTING', 'NEW YORK');
+INSERT INTO Dept VALUES (20, 'RESEARCH', 'DALLAS');
+INSERT INTO Dept VALUES (30, 'SALES', 'CHICAGO');
+INSERT INTO Dept VALUES (40, 'OPERATIONS', 'BOSTON');
+
+
+(4)사원에 관한 다음 네 개의 데이터를 삽입하시오
+
+INSERT INTO Emp VALUES (7369, 'SMITH', 'CLERK', 7902, TO_DATE('1980-12-17', 'YYYY-MM-DD'), 800, NULL, 20);
+INSERT INTO Emp VALUES (7499, 'ALLEN', 'SALESMAN', 7698, TO_DATE('1981-02-20', 'YYYY-MM-DD'), 1600, 300, 30);
+INSERT INTO Emp VALUES (7521, 'WARD', 'SALESMAN', 7698, TO_DATE('1981-02-22', 'YYYY-MM-DD'), 1250, 500, 30);
+INSERT INTO Emp VALUES (7566, 'JONES', 'MANAGER', 7839, TO_DATE('1981-04-02', 'YYYY-MM-DD'), 2975, NULL, 20);
+
+(5)사원 테이블에 다음 데이터를 삽입하려고 하니 오류가 발생하였다. 오류 메시지를 확
+인해 보고 원인을 찾아보시오
+
+문제 : INSERT INTO Emp (empno,ename, job,mgr, hiredate,sal,comm,deptno ) values
+(7654,‘MARTIN’, ‘SALESMAN’,7698, ‘1981-09-2800:00:00’, 1250,1400,50);
+
+1. 외래키 제약조건 위배 (부모 키 없음):
+deptno 값으로 50을 입력하려 하지만, 참조 대상인 Dept 테이블에 부서번호 50이 존재하지 않을 가능성이 매우 높습니다. 부서번호 10, 20, 30, 40만 생성된 상태라면 오류가 발생합니다.
+
+2 . 데이터 타입 불일치 (날짜 형식):
+hiredate에 입력된 '1981-09-2800:00:00' 값의 형식이 데이터베이스의 기본 날짜 설정과 맞지 않거나, 오타(날짜와 시간 사이 공백 등)로 인해 날짜로 변환되지 못할 수 있습니다.
+
+수정된 코드 : 
+INSERT INTO Emp (empno, ename, job, mgr, hiredate, sal, comm, deptno) 
+VALUES (7654, 'MARTIN', 'SALESMAN', 7698, TO_DATE('1981-09-28', 'YYYY-MM-DD'), 1250, 1400, 30);
+
